@@ -1,4 +1,4 @@
-##🚗 Smart Wheel Alignment Monitoring System
+🚗 Smart Wheel Alignment Monitoring System
 ESP32 + MPU6050 (Future Upgrade: STM32 + High-Precision IMUs)
 
 This project implements a real-time wheel alignment monitoring system using an ESP32 and an MPU6050 IMU.
