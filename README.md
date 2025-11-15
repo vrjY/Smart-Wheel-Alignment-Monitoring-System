@@ -1,92 +1,90 @@
-Smart Wheel Alignment Monitoring System – ESP32 + MPU6050
+🚗 Smart Wheel Alignment Monitoring System
+ESP32 + MPU6050 (Future Upgrade: STM32 + High-Precision IMUs)
 
-This project implements a real-time wheel alignment monitoring system using an ESP32 and an MPU6050 IMU. The ESP32 hosts a lightweight web dashboard that streams live orientation, acceleration, and temperature data, making it possible to track wheel alignment angles accurately and wirelessly.
+This project implements a real-time wheel alignment monitoring system using an ESP32 and an MPU6050 IMU.
+The ESP32 hosts a web-based dashboard that streams live gyro angle, acceleration, and temperature data using Server-Sent Events (SSE).
 
-Future versions of the system will transition to STM32 and higher-precision IMUs for improved sampling rates, reliability, and automotive-grade performance.
+Future versions will shift to STM32 and higher-accuracy sensors for better sampling, precision, and automotive-grade reliability.
 
 📌 Project Overview
 
-The system reads orientation and acceleration data from the MPU6050 sensor and transmits it to a browser-based interface using Server-Sent Events (SSE).
-Gyroscope drift is compensated using adjustable error thresholds, and live readings are continuously streamed for visualization.
-
-The ESP32 serves a web interface from LittleFS and handles commands such as resetting gyro offsets, making it easy to recalibrate the system without reflashing the board.
+The system continuously reads gyroscope and accelerometer data from the MPU6050, corrects drift using predefined thresholds, and streams the processed values to a browser interface.
+All UI files are served directly from the ESP32’s LittleFS, and calibration can be performed wirelessly using built-in reset endpoints.
 
 🔧 Core Features
 
-Real-time gyro angle tracking (X, Y, Z) with drift correction
+Real-time wheel angle tracking (X, Y, Z) using gyroscope accumulation
 
-Live accelerometer data for secondary motion/tilt verification
+Drift correction thresholds for cleaner and more stable results
 
-MPU6050 temperature monitoring
+Accelerometer monitoring for tilt detection and motion verification
 
-ESP32-hosted web dashboard using AsyncWebServer
+Temperature readings from the MPU6050
 
-Server-Sent Events stream for high-frequency sensor updates
+High-frequency live updates via SSE (10ms gyro, 200ms accel)
 
-Reset controls (reset all axes or individual X/Y/Z readings)
+Web dashboard hosted directly on ESP32
 
-File hosting through LittleFS to serve HTML/CSS/JS dashboard files
+Recalibration controls — reset all axes or individually reset X/Y/Z
 
-🧠 How It Works (Code Breakdown)
-1. Sensor Initialization
+LittleFS integration for serving HTML/CSS/JS files
 
-Adafruit_MPU6050 is used to initialize and configure the IMU.
-If the sensor isn’t detected, the system halts to prevent faulty readings.
+🧠 How It Works
+1️⃣ Sensor Initialization
 
-2. WiFi + Web Server Setup
+The MPU6050 is initialized using Adafruit_MPU6050.
+If the sensor is not detected, the ESP32 halts to avoid invalid readings.
 
-The ESP32 connects to a WiFi network and launches an AsyncWebServer on port 80.
-Static files (index.html, etc.) are served from LittleFS.
+2️⃣ WiFi + Web Server Setup
 
-3. Data Streaming using SSE
+The ESP32 connects to WiFi and launches an AsyncWebServer on port 80.
+Static dashboard files are served from LittleFS using server.serveStatic().
 
-Three independent, timed streams send:
+3️⃣ Sensor Data Streaming (SSE)
 
-Gyro angles (gyro_readings) every 10 ms
+Three timed SSE channels push live data to the dashboard:
 
-Accelerometer values (accelerometer_readings) every 200 ms
+Stream	Endpoint Name	Frequency
+Gyroscope	gyro_readings	Every 10 ms
+Accelerometer	accelerometer_readings	Every 200 ms
+Temperature	temperature_reading	Every 1 second
+4️⃣ Gyroscope Drift Correction
 
-Temperature (temperature_reading) every 1 second
-
-This ensures smooth real-time updates on the dashboard.
-
-4. Gyroscope Drift Adjustment
-
-Raw gyro changes below defined thresholds are ignored:
+Small fluctuations below these thresholds are ignored:
 
 float gyroXerror = 0.07;
 float gyroYerror = 0.03;
 float gyroZerror = 0.01;
 
 
-Valid movements are accumulated into gyroX, gyroY, and gyroZ—representing wheel angle deviations.
+Valid changes are accumulated into:
+gyroX, gyroY, gyroZ → representing wheel alignment angle deviations.
 
-5. Reset Endpoints
+5️⃣ Reset/Calibration Endpoints
 
-The ESP32 exposes the following routes for quick recalibration:
+The ESP32 exposes easy calibration routes:
 
-/reset → reset all axes
+/reset     – reset all axes  
+/resetX    – reset X axis  
+/resetY    – reset Y axis  
+/resetZ    – reset Z axis  
 
-/resetX → reset X axis
-
-/resetY → reset Y axis
-
-/resetZ → reset Z axis
-
-📁 Project File Structure
+📁 Project Structure
 /data
-   ├── index.html
-   ├── script.js
-   └── style.css
+│── index.html
+│── script.js
+└── style.css
 
-/main.ino   → Main ESP32 code
+main.ino       → ESP32 firmware
 
-🚀 Future Improvements
+🚀 Future Upgrades
 
-Migration to STM32 MCU for automotive-grade performance
+Migration to STM32 for higher accuracy and better hardware timing
 
-Integration of better IMU sensors (BMI270, ICM20948, etc.)
+Adoption of advanced IMUs (ICM-20948, BMI270, BNO080, etc.)
 
-More accurate drift modeling and Kalman/Complementary filters
+Kalman / Complementary filtering for smoother angle estimation
 
-Bluetooth/LoRa connectivity for vehicle-mounted deployments
+Bluetooth / LoRa communication for vehicle-mounted deployments
+
+Full UI upgrade with graphs, logs, and calibration tools
