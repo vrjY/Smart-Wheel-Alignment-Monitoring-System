@@ -1,4 +1,4 @@
-🚗 Smart Wheel Alignment Monitoring System
+## 🚗 Smart Wheel Alignment Monitoring System
 ESP32 + MPU6050 (Future Upgrade: STM32 + High-Precision IMUs)
   
 This project implements a real-time wheel alignment monitoring system using an ESP32 and an MPU6050 IMU.
@@ -6,12 +6,12 @@ The ESP32 hosts a web-based dashboard that streams live gyro angle, acceleration
 
 Future versions will shift to STM32 and higher-accuracy sensors for better sampling, precision, and automotive-grade reliability.
 
-📌 Project Overview
+### 📌 Project Overview
 
 The system continuously reads gyroscope and accelerometer data from the MPU6050, corrects drift using predefined thresholds, and streams the processed values to a browser interface.
 All UI files are served directly from the ESP32’s LittleFS, and calibration can be performed wirelessly using built-in reset endpoints.
 
-🔧 Core Features
+### 🔧 Core Features
 
 Real-time wheel angle tracking (X, Y, Z) using gyroscope accumulation
 
@@ -29,18 +29,18 @@ Recalibration controls — reset all axes or individually reset X/Y/Z
 
 LittleFS integration for serving HTML/CSS/JS files
 
-🧠 How It Works
+## 🧠 How It Works
 1️⃣ Sensor Initialization
 
 The MPU6050 is initialized using Adafruit_MPU6050.
 If the sensor is not detected, the ESP32 halts to avoid invalid readings.
 
-2️⃣ WiFi + Web Server Setup
+## 2️⃣ WiFi + Web Server Setup
 
 The ESP32 connects to WiFi and launches an AsyncWebServer on port 80.
 Static dashboard files are served from LittleFS using server.serveStatic().
 
-3️⃣ Sensor Data Streaming (SSE)
+## 3️⃣ Sensor Data Streaming (SSE)
 
 Three timed SSE channels push live data to the dashboard:
 
@@ -48,7 +48,7 @@ Stream	Endpoint Name	Frequency
 Gyroscope	gyro_readings	Every 10 ms
 Accelerometer	accelerometer_readings	Every 200 ms
 Temperature	temperature_reading	Every 1 second
-4️⃣ Gyroscope Drift Correction
+## 4️⃣ Gyroscope Drift Correction
 
 Small fluctuations below these thresholds are ignored:
 
@@ -60,7 +60,7 @@ float gyroZerror = 0.01;
 Valid changes are accumulated into:
 gyroX, gyroY, gyroZ → representing wheel alignment angle deviations.
 
-5️⃣ Reset/Calibration Endpoints
+## 5️⃣ Reset/Calibration Endpoints
 
 The ESP32 exposes easy calibration routes:
 
@@ -69,7 +69,7 @@ The ESP32 exposes easy calibration routes:
 /resetY    – reset Y axis  
 /resetZ    – reset Z axis  
 
-📁 Project Structure
+### 📁 Project Structure
 /data
 │── index.html
 │── script.js
@@ -77,7 +77,7 @@ The ESP32 exposes easy calibration routes:
 
 main.ino       → ESP32 firmware
 
-🚀 Future Upgrades
+### 🚀 Future Upgrades
 
 Migration to STM32 for higher accuracy and better hardware timing
 
